@@ -17,7 +17,7 @@ public class TodoController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(createDto.Title))
         {
-            return BadRequest(new { Message = "Title is required." });
+            return NotFound(new { Message = "Title is required." });
         }
 
         var newTodo = new Todo
@@ -33,7 +33,7 @@ public class TodoController : ControllerBase
 
         _todos.TryAdd(newTodo.Id, newTodo);
 
-        return Ok("Created successull");
+        return Ok("Created successfully");
     }
 
     [HttpGet("search")]
