@@ -1,0 +1,38 @@
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Concurrent;
+using TodoApi.Dtos;
+using TodoApi.Models;
+
+
+namespace TodoApi.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class TodoController : ControllerBase
+{
+    public static readonly ConcurrentDictionary<Guid, Todo> _todos = new();
+
+    [HttpPost]
+    public ActionResult<Todo> CreateTodo([FromBody] CreateTodoDto createDto)
+    {
+        if (string.IsNullOrWhiteSpace(createDto.Title))
+        {
+            return BadRequest(new { Message = "Title is required." });
+        }
+
+        var newTodo = new Todo
+        {
+            Title = createDto.Title,
+            Description = createDto.Description,
+            Priority = createDto.Priority,
+            DueDate = createDto.DueDate,
+            Category = createDto.Category,
+            IsCompleted = true,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _todos.TryAdd(newTodo.Id, newTodo);
+
+        return Ok("Created successull");
+    }
+}
