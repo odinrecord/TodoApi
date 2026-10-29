@@ -27,12 +27,23 @@ public class TodoController : ControllerBase
             Priority = createDto.Priority,
             DueDate = createDto.DueDate,
             Category = createDto.Category,
-            IsCompleted = true,
+            IsCompleted = false,
             CreatedAt = DateTime.UtcNow
         };
 
         _todos.TryAdd(newTodo.Id, newTodo);
 
         return Ok("Created successull");
+    }
+
+    [HttpGet("search")]
+    public IActionResult SearchTodoAsync(
+        [FromQuery] bool isCompleted,
+        [FromQuery] PriorityLevel priority
+    )
+    {
+        var result = _todos.Values.Select(
+            x => x.IsCompleted == isCompleted & x.Priority == priority);
+        return Ok(result);
     }
 }
